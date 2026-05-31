@@ -247,16 +247,7 @@
       </div>
     </div>
 
-    <div class="section-label">困っていること / Kendala</div>
-    <div class="check-card" onclick="toggleCheck(this)">
-      <div class="check-inner">
-        <div class="custom-cb"><svg viewBox="0 0 13 13" fill="none" stroke="#fff" stroke-width="2.5"><polyline points="2,7 5,10 11,3"/></svg></div>
-        <div class="check-texts">
-          <div class="check-ja">人が足りない（社長に連絡済み）</div>
-          <div class="check-id">Kekurangan tenaga (sudah lapor ke direktur)</div>
-        </div>
-      </div>
-    </div>
+
     <div class="note-wrap">
       <textarea placeholder="コメント・備考 / Komentar & Catatan"></textarea>
     </div>
@@ -450,6 +441,9 @@ function selectYN(btn, cardId, val) {
   if (cardId === 'yn-disease') {
     document.getElementById('sec-disease-photo').className = 'sub-section' + (val==='yes' ? ' visible' : '');
   }
+  if (cardId === 'yn-shortage') {
+    document.getElementById('sec-shortage-contact').className = 'sub-section' + (val==='yes' ? ' visible' : '');
+  }
   if (cardId === 'yn-incident') {
     document.getElementById('sec-incident-reason').className = 'sub-section' + (val==='yes' ? ' visible' : '');
   }
@@ -482,7 +476,7 @@ function updateProgress() {
   document.getElementById('prog-label').textContent = done+' / '+total;
 }
 
-const GAS_URL = 'https://script.google.com/macros/s/AKfycbxMcUsNeg92csvnlXjuvW4D3D3Us7vS-j7m8NDYCwrCWM_OdBdGJuKFfV3xdy-nLVTX/exec';
+const GAS_URL = 'https://script.google.com/macros/s/AKfycbwvWM0ksRw7Aoyz6GBUyZEIVqaZ6WSChsvYyGnmzUnBdg6hiU1U4e3cRCHDQE4P-Ud9/exec';
 const GROUP_ID = 'Ce9d0617801314cecc9c66be426bdf19f';
 
 function collectItems() {
@@ -509,6 +503,9 @@ function collectItems() {
     // シワ
     if (ynState['yn-wrinkle']) items.push('🌱 シワ: ' + (ynState['yn-wrinkle']==='yes' ? 'あり' : 'なし'));
     if (ynState['yn-guided']) items.push('📢 指導: ' + (ynState['yn-guided']==='yes' ? '指導済み' : 'まだ'));
+    // 人員不足
+    if (ynState['yn-shortage']) items.push('👥 人が足りない: ' + (ynState['yn-shortage']==='yes' ? 'はい' : 'いいえ'));
+    if (ynState['yn-shortage-contact']) items.push('📞 社長連絡: ' + (ynState['yn-shortage-contact']==='yes' ? '連絡済み' : 'まだ'));
     // チェック項目
     document.querySelectorAll('#form-hiru .check-card.checked .check-ja').forEach(function(el) {
       items.push('✅ ' + el.textContent);
