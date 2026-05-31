@@ -7,293 +7,92 @@
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&family=Noto+Sans:wght@400;500&display=swap" rel="stylesheet">
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
   :root {
-    --green-dark: #1a3d2b;
-    --green-mid: #2d6a4f;
-    --green-light: #52b788;
-    --green-pale: #d8f3dc;
-    --amber: #f4a261;
-    --amber-pale: #fff3e0;
-    --red-pale: #fdecea;
-    --red: #e05252;
-    --bg: #f5f7f2;
-    --card: #ffffff;
-    --text: #1a2e1a;
-    --text-sub: #5a7060;
-    --border: #dde8de;
-    --radius: 14px;
-    --radius-sm: 8px;
+    --green-dark: #1a3d2b; --green-mid: #2d6a4f; --green-light: #52b788;
+    --green-pale: #d8f3dc; --amber-pale: #fff3e0; --amber-border: #EF9F27;
+    --amber-text: #854F0B; --red-pale: #fdecea; --red: #e05252;
+    --bg: #f5f7f2; --card: #ffffff; --text: #1a2e1a; --text-sub: #5a7060;
+    --border: #dde8de; --radius: 14px; --radius-sm: 8px;
   }
-
-  html, body {
-    height: 100%;
-    overflow: hidden;
-  }
-
+  html { height: 100%; }
   body {
-    font-family: 'Noto Sans JP', 'Noto Sans', sans-serif;
-    background: var(--bg);
-    color: var(--text);
-    display: flex;
-    flex-direction: column;
+    height: 100%; height: 100dvh; overflow: hidden;
+    font-family: 'Noto Sans JP','Noto Sans',sans-serif;
+    background: var(--bg); color: var(--text);
+    display: flex; flex-direction: column;
   }
-
-  main {
-    flex: 1;
-    overflow-y: auto;
-    -webkit-overflow-scrolling: touch;
-  }
-
-  header {
-    background: var(--green-dark);
-    padding: 1.25rem 1.25rem 1rem;
-    position: sticky;
-    top: 0;
-    z-index: 10;
-  }
-
-  .header-top {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    margin-bottom: 0.75rem;
-  }
-
-  .logo-leaf {
-    width: 32px;
-    height: 32px;
-    background: var(--green-light);
-    border-radius: 50% 50% 50% 10%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 16px;
-    flex-shrink: 0;
-  }
-
-  .header-title {
-    color: #ffffff;
-    font-size: 16px;
-    font-weight: 700;
-    line-height: 1.2;
-  }
-
-  .header-sub {
-    color: var(--green-light);
-    font-size: 11px;
-    font-weight: 400;
-    margin-top: 1px;
-  }
-
-  .tab-row {
-    display: flex;
-    gap: 6px;
-  }
-
-  .tab {
-    flex: 1;
-    height: 38px;
-    border-radius: var(--radius-sm);
-    border: none;
-    background: rgba(255,255,255,0.1);
-    color: rgba(255,255,255,0.6);
-    font-size: 13px;
-    font-weight: 500;
-    font-family: inherit;
-    cursor: pointer;
-    transition: background 0.15s, color 0.15s;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 6px;
-  }
-
-  .tab svg { width: 15px; height: 15px; flex-shrink: 0; }
+  main { flex: 1; min-height: 0; overflow-y: auto; -webkit-overflow-scrolling: touch; padding: 1rem; max-width: 480px; margin: 0 auto; padding-bottom: 2rem; }
+  header { background: var(--green-dark); padding: 1.25rem 1.25rem 1rem; position: sticky; top: 0; z-index: 10; }
+  .header-top { display: flex; align-items: center; gap: 10px; margin-bottom: 0.75rem; }
+  .logo-leaf { width: 32px; height: 32px; background: var(--green-light); border-radius: 50% 50% 50% 10%; display: flex; align-items: center; justify-content: center; font-size: 16px; flex-shrink: 0; }
+  .header-title { color: #fff; font-size: 16px; font-weight: 700; line-height: 1.2; }
+  .header-sub { color: var(--green-light); font-size: 11px; margin-top: 1px; }
+  .tab-row { display: flex; gap: 6px; }
+  .tab { flex: 1; height: 38px; border-radius: var(--radius-sm); border: none; background: rgba(255,255,255,0.1); color: rgba(255,255,255,0.6); font-size: 13px; font-weight: 500; font-family: inherit; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; transition: background 0.15s, color 0.15s; }
+  .tab svg { width: 15px; height: 15px; }
   .tab.active { background: var(--green-light); color: var(--green-dark); }
-
-  main { padding: 1rem; max-width: 480px; margin: 0 auto; padding-bottom: 2rem; }
-
-  .meta-card {
-    background: var(--card);
-    border-radius: var(--radius);
-    border: 1px solid var(--border);
-    padding: 1rem;
-    margin-bottom: 1rem;
-    display: flex;
-    gap: 8px;
-  }
-
-  select, input[type=date] {
-    flex: 1;
-    height: 40px;
-    padding: 0 12px;
-    font-size: 14px;
-    font-family: inherit;
-    border-radius: var(--radius-sm);
-    border: 1px solid var(--border);
-    background: var(--bg);
-    color: var(--text);
-    appearance: none;
-    -webkit-appearance: none;
-  }
-
+  .meta-card { background: var(--card); border-radius: var(--radius); border: 1px solid var(--border); padding: 1rem; margin-bottom: 1rem; display: flex; gap: 8px; }
+  select, input[type=date] { flex: 1; height: 40px; padding: 0 12px; font-size: 14px; font-family: inherit; border-radius: var(--radius-sm); border: 1px solid var(--border); background: var(--bg); color: var(--text); appearance: none; -webkit-appearance: none; }
   select:focus, input[type=date]:focus { outline: 2px solid var(--green-light); border-color: transparent; }
-
-  .section-label {
-    font-size: 11px;
-    font-weight: 700;
-    color: var(--text-sub);
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    margin: 1.25rem 0 0.5rem 0.25rem;
-  }
-
-  .check-card {
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    margin-bottom: 6px;
-    overflow: hidden;
-    transition: border-color 0.15s, background 0.15s;
-    cursor: pointer;
-    -webkit-tap-highlight-color: transparent;
-  }
-
-  .check-card.checked {
-    background: var(--green-pale);
-    border-color: var(--green-light);
-  }
-
-  .check-inner {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    padding: 12px 14px;
-  }
-
-  .custom-cb {
-    width: 22px;
-    height: 22px;
-    border-radius: 6px;
-    border: 2px solid var(--border);
-    background: var(--bg);
-    flex-shrink: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: background 0.15s, border-color 0.15s;
-  }
-
-  .check-card.checked .custom-cb {
-    background: var(--green-mid);
-    border-color: var(--green-mid);
-  }
-
+  .section-label { font-size: 11px; font-weight: 700; color: var(--text-sub); letter-spacing: 0.08em; text-transform: uppercase; margin: 1.25rem 0 0.5rem 0.25rem; }
+  /* チェックカード */
+  .check-card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); margin-bottom: 6px; cursor: pointer; -webkit-tap-highlight-color: transparent; transition: border-color 0.15s, background 0.15s; }
+  .check-card.checked { background: var(--green-pale); border-color: var(--green-light); }
+  .check-inner { display: flex; align-items: center; gap: 12px; padding: 12px 14px; }
+  .custom-cb { width: 22px; height: 22px; border-radius: 6px; border: 2px solid var(--border); background: var(--bg); flex-shrink: 0; display: flex; align-items: center; justify-content: center; transition: background 0.15s, border-color 0.15s; }
+  .check-card.checked .custom-cb { background: var(--green-mid); border-color: var(--green-mid); }
   .custom-cb svg { display: none; width: 13px; height: 13px; }
   .check-card.checked .custom-cb svg { display: block; }
-
   .check-texts { flex: 1; }
   .check-ja { font-size: 14px; font-weight: 500; color: var(--text); line-height: 1.4; }
   .check-id { font-size: 12px; color: var(--text-sub); margin-top: 2px; line-height: 1.4; }
   .check-card.checked .check-ja { color: var(--green-dark); }
-
+  /* はい/いいえ カード */
+  .yn-card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); margin-bottom: 6px; padding: 12px 14px; }
+  .yn-label { font-size: 14px; font-weight: 500; color: var(--text); margin-bottom: 4px; }
+  .yn-label-id { font-size: 12px; color: var(--text-sub); margin-bottom: 10px; }
+  .yn-btns { display: flex; gap: 8px; }
+  .yn-btn { flex: 1; height: 36px; border-radius: var(--radius-sm); border: 1px solid var(--border); background: var(--bg); font-size: 14px; font-weight: 500; font-family: inherit; cursor: pointer; transition: background 0.15s, border-color 0.15s, color 0.15s; -webkit-tap-highlight-color: transparent; }
+  .yn-btn.sel-yes { background: var(--green-pale); border-color: var(--green-light); color: var(--green-dark); }
+  .yn-btn.sel-no { background: var(--red-pale); border-color: #F09595; color: #A32D2D; }
+  /* 汎用カード */
+  .info-card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); margin-bottom: 6px; padding: 12px 14px; }
+  .info-label { font-size: 14px; font-weight: 500; color: var(--text); margin-bottom: 4px; }
+  .info-label-id { font-size: 12px; color: var(--text-sub); margin-bottom: 10px; }
+  /* ボタン選択 */
+  .num-selector { display: flex; flex-wrap: wrap; gap: 6px; }
+  .num-btn { height: 32px; min-width: 36px; padding: 0 8px; border-radius: var(--radius-sm); border: 1px solid var(--border); background: var(--bg); font-size: 13px; font-family: inherit; color: var(--text-sub); cursor: pointer; transition: background 0.15s, border-color 0.15s, color 0.15s; -webkit-tap-highlight-color: transparent; }
+  .num-btn.selected { background: var(--green-pale); border-color: var(--green-light); color: var(--green-dark); font-weight: 700; }
+  .num-btn.selected-ng { background: var(--amber-pale); border-color: var(--amber-border); color: var(--amber-text); font-weight: 700; }
+  /* 警告ボックス */
+  .warn-box { background: var(--amber-pale); border: 1px solid var(--amber-border); border-radius: var(--radius); padding: 12px 14px; margin-bottom: 6px; }
+  .warn-title { font-size: 13px; font-weight: 700; color: var(--amber-text); margin-bottom: 8px; }
+  /* サブ項目 */
+  .sub-section { margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--border); display: none; }
+  .sub-section.visible { display: block; }
+  .sub-label { font-size: 13px; font-weight: 500; color: var(--text-sub); margin-bottom: 6px; }
+  /* textarea */
   .note-wrap { margin-top: 0.75rem; }
-  textarea {
-    width: 100%;
-    min-height: 72px;
-    padding: 10px 14px;
-    font-size: 14px;
-    font-family: inherit;
-    border-radius: var(--radius);
-    border: 1px solid var(--border);
-    background: var(--card);
-    color: var(--text);
-    resize: vertical;
-  }
+  textarea { width: 100%; min-height: 60px; padding: 10px 14px; font-size: 14px; font-family: inherit; border-radius: var(--radius); border: 1px solid var(--border); background: var(--card); color: var(--text); resize: vertical; }
   textarea:focus { outline: 2px solid var(--green-light); border-color: transparent; }
   textarea::placeholder { color: var(--text-sub); }
-
-  .footer {
-    margin-top: 1.5rem;
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-  }
-
-  .progress-row {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-  }
-
-  .progress-track {
-    flex: 1;
-    height: 7px;
-    background: var(--border);
-    border-radius: 99px;
-    overflow: hidden;
-  }
-
-  .progress-fill {
-    height: 100%;
-    background: var(--green-mid);
-    border-radius: 99px;
-    width: 0%;
-    transition: width 0.25s ease;
-  }
-
+  /* フッター */
+  .footer { margin-top: 1.5rem; display: flex; flex-direction: column; gap: 12px; }
+  .progress-row { display: flex; align-items: center; gap: 10px; }
+  .progress-track { flex: 1; height: 7px; background: var(--border); border-radius: 99px; overflow: hidden; }
+  .progress-fill { height: 100%; background: var(--green-mid); border-radius: 99px; width: 0%; transition: width 0.25s ease; }
   .progress-label { font-size: 13px; color: var(--text-sub); white-space: nowrap; }
-
-  .submit-btn {
-    width: 100%;
-    height: 50px;
-    border-radius: var(--radius);
-    border: none;
-    background: var(--green-mid);
-    color: #fff;
-    font-size: 16px;
-    font-weight: 700;
-    font-family: inherit;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    transition: background 0.15s, transform 0.1s;
-    -webkit-tap-highlight-color: transparent;
-  }
+  .submit-btn { width: 100%; height: 50px; border-radius: var(--radius); border: none; background: var(--green-mid); color: #fff; font-size: 16px; font-weight: 700; font-family: inherit; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; transition: background 0.15s, transform 0.1s; -webkit-tap-highlight-color: transparent; }
   .submit-btn:active { transform: scale(0.98); background: var(--green-dark); }
   .submit-btn svg { width: 20px; height: 20px; }
-
-  .done-card {
-    display: none;
-    background: var(--green-pale);
-    border: 1px solid var(--green-light);
-    border-radius: var(--radius);
-    padding: 1.5rem;
-    text-align: center;
-    margin-top: 1rem;
-  }
+  .done-card { display: none; background: var(--green-pale); border: 1px solid var(--green-light); border-radius: var(--radius); padding: 1.5rem; text-align: center; margin-top: 1rem; }
   .done-icon { font-size: 40px; margin-bottom: 0.5rem; }
   .done-title { font-size: 17px; font-weight: 700; color: var(--green-dark); margin-bottom: 4px; }
   .done-sub { font-size: 13px; color: var(--text-sub); }
-  .done-reset {
-    margin-top: 1rem;
-    height: 36px;
-    padding: 0 20px;
-    border-radius: var(--radius-sm);
-    border: 1px solid var(--green-mid);
-    background: transparent;
-    color: var(--green-mid);
-    font-size: 13px;
-    font-family: inherit;
-    cursor: pointer;
-  }
+  .done-reset { margin-top: 1rem; height: 36px; padding: 0 20px; border-radius: var(--radius-sm); border: 1px solid var(--green-mid); background: transparent; color: var(--green-mid); font-size: 13px; font-family: inherit; cursor: pointer; }
 </style>
 </head>
 <body>
-
 <header>
   <div class="header-top">
     <div class="logo-leaf">🌿</div>
@@ -318,68 +117,137 @@
   <div class="meta-card">
     <select id="sel-name">
       <option value="">氏名 / Nama ▾</option>
-      <option>根本</option>
-      <option>須藤</option>
-      <option>ディカ</option>
-      <option>ランディタ</option>
-      <option>ナタ</option>
-      <option>タマ</option>
-      <option>アディ</option>
-      <option>アンドレ</option>
-      <option>スズキ</option>
+      <option>根本</option><option>須藤</option><option>ディカ</option>
+      <option>ランディタ</option><option>ナタ</option><option>タマ</option>
+      <option>アディ</option><option>アンドレ</option><option>スズキ</option>
     </select>
     <input type="date" id="inp-date">
   </div>
 
+  <!-- ===== 昼の報告 ===== -->
   <div id="form-hiru">
-    <div class="section-label">作業状況 / Status Kerja</div>
-    <div class="check-card" onclick="toggleCheck(this)">
-      <div class="check-inner">
-        <div class="custom-cb"><svg viewBox="0 0 13 13" fill="none" stroke="#fff" stroke-width="2.5"><polyline points="2,7 5,10 11,3"/></svg></div>
-        <div class="check-texts">
-          <div class="check-ja">午前の作業は予定通り進んでいる</div>
-          <div class="check-id">Pekerjaan pagi berjalan sesuai jadwal</div>
+
+    <div class="section-label">作業進捗 / Progres Kerja</div>
+
+    <!-- 作業進捗 % -->
+    <div class="info-card">
+      <div class="info-label">お昼までの作業進捗</div>
+      <div class="info-label-id">Progres pekerjaan sebelum siang</div>
+      <div class="num-selector" id="pct-btns">
+        <button class="num-btn" onclick="selectPct(this,0)">0%</button>
+        <button class="num-btn" onclick="selectPct(this,10)">10%</button>
+        <button class="num-btn" onclick="selectPct(this,20)">20%</button>
+        <button class="num-btn" onclick="selectPct(this,30)">30%</button>
+        <button class="num-btn" onclick="selectPct(this,40)">40%</button>
+        <button class="num-btn" onclick="selectPct(this,50)">50%</button>
+        <button class="num-btn" onclick="selectPct(this,60)">60%</button>
+        <button class="num-btn" onclick="selectPct(this,70)">70%</button>
+        <button class="num-btn" onclick="selectPct(this,80)">80%</button>
+        <button class="num-btn" onclick="selectPct(this,90)">90%</button>
+        <button class="num-btn" onclick="selectPct(this,100)">100%</button>
+      </div>
+
+      <!-- 50%以下：理由＋人員不足 -->
+      <div class="sub-section" id="sec-low">
+        <div class="warn-title">⚠️ 50%以下 — 理由と必要な人員を教えてください / Jelaskan alasan & kebutuhan tenaga</div>
+        <textarea id="pct-reason-text" placeholder="遅れている理由 / Alasan keterlambatan" style="min-height:52px;margin-bottom:10px"></textarea>
+        <div class="sub-label">収穫に必要な人数 / Jumlah orang untuk panen</div>
+        <div class="num-selector" id="need-harvest">
+          <button class="num-btn" onclick="selectNum(this,'need-harvest')">0</button>
+          <button class="num-btn" onclick="selectNum(this,'need-harvest')">1</button>
+          <button class="num-btn" onclick="selectNum(this,'need-harvest')">2</button>
+          <button class="num-btn" onclick="selectNum(this,'need-harvest')">3</button>
+          <button class="num-btn" onclick="selectNum(this,'need-harvest')">4</button>
+          <button class="num-btn" onclick="selectNum(this,'need-harvest')">5</button>
+          <button class="num-btn" onclick="selectNum(this,'need-harvest')">6</button>
+          <button class="num-btn" onclick="selectNum(this,'need-harvest')">7</button>
+          <button class="num-btn" onclick="selectNum(this,'need-harvest')">8</button>
+        </div>
+        <div class="sub-label" style="margin-top:10px">皮むきに必要な人数 / Jumlah orang untuk pengupasan</div>
+        <div class="num-selector" id="need-peel">
+          <button class="num-btn" onclick="selectNum(this,'need-peel')">0</button>
+          <button class="num-btn" onclick="selectNum(this,'need-peel')">1</button>
+          <button class="num-btn" onclick="selectNum(this,'need-peel')">2</button>
+          <button class="num-btn" onclick="selectNum(this,'need-peel')">3</button>
+          <button class="num-btn" onclick="selectNum(this,'need-peel')">4</button>
+          <button class="num-btn" onclick="selectNum(this,'need-peel')">5</button>
+          <button class="num-btn" onclick="selectNum(this,'need-peel')">6</button>
+          <button class="num-btn" onclick="selectNum(this,'need-peel')">7</button>
+          <button class="num-btn" onclick="selectNum(this,'need-peel')">8</button>
+        </div>
+        <div class="sub-label" style="margin-top:10px">箱詰めに必要な人数 / Jumlah orang untuk pengepakan</div>
+        <div class="num-selector" id="need-box">
+          <button class="num-btn" onclick="selectNum(this,'need-box')">0</button>
+          <button class="num-btn" onclick="selectNum(this,'need-box')">1</button>
+          <button class="num-btn" onclick="selectNum(this,'need-box')">2</button>
+          <button class="num-btn" onclick="selectNum(this,'need-box')">3</button>
+          <button class="num-btn" onclick="selectNum(this,'need-box')">4</button>
+          <button class="num-btn" onclick="selectNum(this,'need-box')">5</button>
+          <button class="num-btn" onclick="selectNum(this,'need-box')">6</button>
+          <button class="num-btn" onclick="selectNum(this,'need-box')">7</button>
+          <button class="num-btn" onclick="selectNum(this,'need-box')">8</button>
+        </div>
+      </div>
+
+      <!-- 60%以上：余剰人員 -->
+      <div class="sub-section" id="sec-high">
+        <div class="sub-label">人員の余り / Kelebihan tenaga kerja</div>
+        <div class="num-selector" id="surplus-people">
+          <button class="num-btn" onclick="selectNum(this,'surplus-people')">1</button>
+          <button class="num-btn" onclick="selectNum(this,'surplus-people')">2</button>
+          <button class="num-btn" onclick="selectNum(this,'surplus-people')">3</button>
+          <button class="num-btn" onclick="selectNum(this,'surplus-people')">4</button>
+          <button class="num-btn" onclick="selectNum(this,'surplus-people')">5</button>
+          <button class="num-btn" onclick="selectNum(this,'surplus-people')">6</button>
+          <button class="num-btn" onclick="selectNum(this,'surplus-people')">7</button>
+          <button class="num-btn" onclick="selectNum(this,'surplus-people')">8</button>
+          <button class="num-btn" onclick="selectNum(this,'surplus-people')">9</button>
+          <button class="num-btn" onclick="selectNum(this,'surplus-people')">10</button>
         </div>
       </div>
     </div>
-    <div class="check-card" onclick="toggleCheck(this)">
-      <div class="check-inner">
-        <div class="custom-cb"><svg viewBox="0 0 13 13" fill="none" stroke="#fff" stroke-width="2.5"><polyline points="2,7 5,10 11,3"/></svg></div>
-        <div class="check-texts">
-          <div class="check-ja">お昼までに作業が間に合いそう</div>
-          <div class="check-id">Pekerjaan diperkirakan selesai sebelum siang</div>
+
+    <div class="section-label">品質チェック / Cek Kualitas</div>
+
+    <!-- ネギに病気が出ているか -->
+    <div class="yn-card" id="yn-disease">
+      <div class="yn-label">収穫ネギに病気が出ているか</div>
+      <div class="yn-label-id">Apakah ada penyakit pada daun bawang yang dipanen?</div>
+      <div class="yn-btns">
+        <button class="yn-btn" onclick="selectYN(this,'yn-disease','yes')">はい / Ya</button>
+        <button class="yn-btn" onclick="selectYN(this,'yn-disease','no')">いいえ / Tidak</button>
+      </div>
+      <!-- はい→写真送信確認 -->
+      <div class="sub-section" id="sec-disease-photo">
+        <div class="warn-title">📷 写真を送ってください / Mohon kirim foto</div>
+        <div class="sub-label" style="margin-top:8px">写真の送信状況 / Status pengiriman foto</div>
+        <div class="yn-btns" style="margin-top:6px">
+          <button class="yn-btn" onclick="selectYN(this,'yn-photo','yes')">送信完了 / Sudah dikirim</button>
+          <button class="yn-btn" onclick="selectYN(this,'yn-photo','no')">未送信 / Belum dikirim</button>
         </div>
       </div>
     </div>
-    <div class="check-card" onclick="toggleCheck(this)">
-      <div class="check-inner">
-        <div class="custom-cb"><svg viewBox="0 0 13 13" fill="none" stroke="#fff" stroke-width="2.5"><polyline points="2,7 5,10 11,3"/></svg></div>
-        <div class="check-texts">
-          <div class="check-ja">人員は足りている</div>
-          <div class="check-id">Jumlah tenaga kerja cukup</div>
-        </div>
+
+    <!-- シワがあるか -->
+    <div class="yn-card" id="yn-wrinkle">
+      <div class="yn-label">収穫したネギ　1本でもシワがあるか</div>
+      <div class="yn-label-id">Apakah ada daun bawang yang keriput?</div>
+      <div class="yn-btns">
+        <button class="yn-btn" onclick="selectYN(this,'yn-wrinkle','yes')">はい / Ya</button>
+        <button class="yn-btn" onclick="selectYN(this,'yn-wrinkle','no')">いいえ / Tidak</button>
       </div>
-    </div>
-    <div class="check-card" onclick="toggleCheck(this)">
-      <div class="check-inner">
-        <div class="custom-cb"><svg viewBox="0 0 13 13" fill="none" stroke="#fff" stroke-width="2.5"><polyline points="2,7 5,10 11,3"/></svg></div>
-        <div class="check-texts">
-          <div class="check-ja">安全上の問題はない</div>
-          <div class="check-id">Tidak ada masalah keselamatan kerja</div>
+      <!-- はい→指導確認 -->
+      <div class="sub-section" id="sec-wrinkle-guide">
+        <div class="warn-title">⚠️ 運ぶときにやさしく置くように指導してください / Instruksikan untuk meletakkan dengan hati-hati saat dibawa</div>
+        <div class="sub-label" style="margin-top:8px">指導しましたか？ / Sudah memberi instruksi?</div>
+        <div class="yn-btns" style="margin-top:6px">
+          <button class="yn-btn" onclick="selectYN(this,'yn-guided','yes')">指導した / Sudah</button>
+          <button class="yn-btn" onclick="selectYN(this,'yn-guided','no')">まだ / Belum</button>
         </div>
       </div>
     </div>
 
     <div class="section-label">困っていること / Kendala</div>
-    <div class="check-card" onclick="toggleCheck(this)">
-      <div class="check-inner">
-        <div class="custom-cb"><svg viewBox="0 0 13 13" fill="none" stroke="#fff" stroke-width="2.5"><polyline points="2,7 5,10 11,3"/></svg></div>
-        <div class="check-texts">
-          <div class="check-ja">作業が遅れている（理由をコメントに記入）</div>
-          <div class="check-id">Pekerjaan terlambat (tulis alasan di komentar)</div>
-        </div>
-      </div>
-    </div>
     <div class="check-card" onclick="toggleCheck(this)">
       <div class="check-inner">
         <div class="custom-cb"><svg viewBox="0 0 13 13" fill="none" stroke="#fff" stroke-width="2.5"><polyline points="2,7 5,10 11,3"/></svg></div>
@@ -394,6 +262,7 @@
     </div>
   </div>
 
+  <!-- ===== 終業報告 ===== -->
   <div id="form-owari" style="display:none">
     <div class="section-label">本日の作業 / Pekerjaan Hari Ini</div>
     <div class="check-card" onclick="toggleCheck(this)">
@@ -423,7 +292,6 @@
         </div>
       </div>
     </div>
-
     <div class="section-label">チーム・安全 / Tim & Keselamatan</div>
     <div class="check-card" onclick="toggleCheck(this)">
       <div class="check-inner">
@@ -459,9 +327,7 @@
 
   <div class="footer">
     <div class="progress-row">
-      <div class="progress-track">
-        <div class="progress-fill" id="prog-fill"></div>
-      </div>
+      <div class="progress-track"><div class="progress-fill" id="prog-fill"></div></div>
       <span class="progress-label" id="prog-label">0 / 0</span>
     </div>
     <button class="submit-btn" onclick="submitReport()">
@@ -479,34 +345,71 @@
 </main>
 
 <script>
-let currentTab = 'hiru';
+function setVh() { document.body.style.height = window.innerHeight + 'px'; }
+setVh(); window.addEventListener('resize', setVh);
 
-const today = new Date().toISOString().slice(0, 10);
-document.getElementById('inp-date').value = today;
+let currentTab = 'hiru';
+document.getElementById('inp-date').value = new Date().toISOString().slice(0,10);
 
 function switchTab(tab) {
   currentTab = tab;
-  document.getElementById('form-hiru').style.display = tab === 'hiru' ? '' : 'none';
-  document.getElementById('form-owari').style.display = tab === 'owari' ? '' : 'none';
-  document.getElementById('tab-hiru').className = 'tab' + (tab === 'hiru' ? ' active' : '');
-  document.getElementById('tab-owari').className = 'tab' + (tab === 'owari' ? ' active' : '');
+  document.getElementById('form-hiru').style.display = tab==='hiru' ? '' : 'none';
+  document.getElementById('form-owari').style.display = tab==='owari' ? '' : 'none';
+  document.getElementById('tab-hiru').className = 'tab'+(tab==='hiru'?' active':'');
+  document.getElementById('tab-owari').className = 'tab'+(tab==='owari'?' active':'');
   document.getElementById('done-card').style.display = 'none';
   updateProgress();
 }
 
-function toggleCheck(card) {
-  card.classList.toggle('checked');
+function selectPct(btn, pct) {
+  document.querySelectorAll('#pct-btns .num-btn').forEach(b => b.className='num-btn');
+  btn.classList.add(pct <= 50 ? 'selected-ng' : 'selected');
+  document.getElementById('sec-low').className = 'sub-section' + (pct<=50 ? ' visible' : '');
+  document.getElementById('sec-high').className = 'sub-section' + (pct>=60 ? ' visible' : '');
   updateProgress();
 }
 
+function selectNum(btn, groupId) {
+  document.querySelectorAll('#'+groupId+' .num-btn').forEach(b => b.className='num-btn');
+  btn.classList.add('selected');
+}
+
+const ynState = {};
+function selectYN(btn, cardId, val) {
+  const card = document.getElementById(cardId);
+  card.querySelectorAll('.yn-btn').forEach(b => b.className='yn-btn');
+  btn.classList.add(val==='yes' ? 'sel-yes' : 'sel-no');
+  ynState[cardId] = val;
+  if (cardId === 'yn-disease') {
+    document.getElementById('sec-disease-photo').className = 'sub-section' + (val==='yes' ? ' visible' : '');
+  }
+  if (cardId === 'yn-wrinkle') {
+    document.getElementById('sec-wrinkle-guide').className = 'sub-section' + (val==='yes' ? ' visible' : '');
+  }
+  updateProgress();
+}
+
+function toggleCheck(card) { card.classList.toggle('checked'); updateProgress(); }
+
 function updateProgress() {
-  const formId = currentTab === 'hiru' ? 'form-hiru' : 'form-owari';
-  const cards = document.querySelectorAll('#' + formId + ' .check-card');
-  const total = cards.length;
-  const done = document.querySelectorAll('#' + formId + ' .check-card.checked').length;
-  const pct = total ? Math.round(done / total * 100) : 0;
-  document.getElementById('prog-fill').style.width = pct + '%';
-  document.getElementById('prog-label').textContent = done + ' / ' + total;
+  if (currentTab !== 'hiru') {
+    const cards = document.querySelectorAll('#form-owari .check-card');
+    const done = document.querySelectorAll('#form-owari .check-card.checked').length;
+    const pct = cards.length ? Math.round(done/cards.length*100) : 0;
+    document.getElementById('prog-fill').style.width = pct+'%';
+    document.getElementById('prog-label').textContent = done+' / '+cards.length;
+    return;
+  }
+  const pctSelected = document.querySelector('#pct-btns .num-btn.selected, #pct-btns .num-btn.selected-ng') ? 1 : 0;
+  const diseaseSelected = ynState['yn-disease'] ? 1 : 0;
+  const wrinkleSelected = ynState['yn-wrinkle'] ? 1 : 0;
+  const checks = document.querySelectorAll('#form-hiru .check-card');
+  const checksDone = document.querySelectorAll('#form-hiru .check-card.checked').length;
+  const total = 3 + checks.length;
+  const done = pctSelected + diseaseSelected + wrinkleSelected + checksDone;
+  const pct = total ? Math.round(done/total*100) : 0;
+  document.getElementById('prog-fill').style.width = pct+'%';
+  document.getElementById('prog-label').textContent = done+' / '+total;
 }
 
 function submitReport() {
@@ -514,22 +417,24 @@ function submitReport() {
   const date = document.getElementById('inp-date').value;
   if (!name) { alert('氏名を選んでください\nPilih nama terlebih dahulu'); return; }
   if (!date) { alert('日付を入力してください\nMasukkan tanggal'); return; }
-  const label = currentTab === 'hiru' ? '昼の報告 / Laporan Siang' : '終業報告 / Laporan Akhir';
+  const label = currentTab==='hiru' ? '昼の報告 / Laporan Siang' : '終業報告 / Laporan Akhir';
   const d = new Date(date);
-  const dateStr = d.getFullYear() + '年' + (d.getMonth()+1) + '月' + d.getDate() + '日';
-  document.getElementById('done-sub').textContent = name + '　' + dateStr + '　' + label;
+  document.getElementById('done-sub').textContent = name+'　'+d.getFullYear()+'年'+(d.getMonth()+1)+'月'+d.getDate()+'日　'+label;
   document.getElementById('done-card').style.display = 'block';
-  document.getElementById('done-card').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  document.getElementById('done-card').scrollIntoView({behavior:'smooth',block:'nearest'});
 }
 
 function resetForm() {
-  const formId = currentTab === 'hiru' ? 'form-hiru' : 'form-owari';
-  document.querySelectorAll('#' + formId + ' .check-card').forEach(c => c.classList.remove('checked'));
-  document.querySelectorAll('#' + formId + ' textarea').forEach(t => t.value = '');
-  document.getElementById('done-card').style.display = 'none';
-  document.getElementById('sel-name').value = '';
+  document.querySelectorAll('.check-card').forEach(c=>c.classList.remove('checked'));
+  document.querySelectorAll('textarea').forEach(t=>t.value='');
+  document.querySelectorAll('.num-btn').forEach(b=>b.className='num-btn');
+  document.querySelectorAll('.yn-btn').forEach(b=>b.className='yn-btn');
+  document.querySelectorAll('.sub-section').forEach(s=>s.className='sub-section');
+  Object.keys(ynState).forEach(k=>delete ynState[k]);
+  document.getElementById('done-card').style.display='none';
+  document.getElementById('sel-name').value='';
   updateProgress();
-  window.scrollTo({ top: 0, behavior: 'smooth' });
+  window.scrollTo({top:0,behavior:'smooth'});
 }
 
 updateProgress();
