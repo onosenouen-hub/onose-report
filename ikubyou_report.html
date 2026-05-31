@@ -1,0 +1,710 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>育苗管理 / Manajemen Bibit</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&family=Noto+Sans:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --green-dark: #1a3d2b; --green-mid: #2d6a4f; --green-light: #52b788;
+    --green-pale: #d8f3dc; --amber-pale: #fff3e0; --amber-border: #EF9F27;
+    --amber-text: #854F0B; --sky: #e0f2fe; --sky-border: #38bdf8; --sky-text: #0369a1;
+    --red-pale: #fdecea; --red-border: #F09595; --red-text: #A32D2D;
+    --bg: #f5f7f2; --card: #ffffff; --text: #1a2e1a; --text-sub: #5a7060;
+    --border: #dde8de; --radius: 14px; --radius-sm: 8px;
+  }
+  html { height: 100%; }
+  body {
+    height: 100%; height: 100dvh; overflow: hidden;
+    font-family: 'Noto Sans JP','Noto Sans',sans-serif;
+    background: var(--bg); color: var(--text);
+    display: flex; flex-direction: column;
+  }
+  main { flex: 1; min-height: 0; overflow-y: auto; -webkit-overflow-scrolling: touch; padding: 1rem; max-width: 480px; margin: 0 auto; padding-bottom: 2rem; }
+  header { background: var(--green-dark); padding: 1.25rem 1.25rem 1rem; position: sticky; top: 0; z-index: 10; }
+  .header-top { display: flex; align-items: center; gap: 10px; }
+  .logo-leaf { width: 32px; height: 32px; background: var(--green-light); border-radius: 50% 50% 50% 10%; display: flex; align-items: center; justify-content: center; font-size: 16px; flex-shrink: 0; }
+  .header-title { color: #fff; font-size: 16px; font-weight: 700; line-height: 1.2; }
+  .header-sub { color: var(--green-light); font-size: 11px; margin-top: 1px; }
+
+  .meta-card { background: var(--card); border-radius: var(--radius); border: 1px solid var(--border); padding: 1rem; margin-bottom: 1rem; display: flex; gap: 8px; margin-top: 1rem; }
+  select, input[type=date], input[type=number] { flex: 1; height: 40px; padding: 0 12px; font-size: 14px; font-family: inherit; border-radius: var(--radius-sm); border: 1px solid var(--border); background: var(--bg); color: var(--text); appearance: none; -webkit-appearance: none; }
+  select:focus, input:focus { outline: 2px solid var(--green-light); border-color: transparent; }
+
+  .section-label { font-size: 11px; font-weight: 700; color: var(--text-sub); letter-spacing: 0.08em; text-transform: uppercase; margin: 1.25rem 0 0.5rem 0.25rem; }
+
+  /* 大きな選択カード */
+  .big-select-row { display: flex; gap: 8px; margin-bottom: 6px; }
+  .big-btn { flex: 1; padding: 14px 8px; border-radius: var(--radius); border: 1px solid var(--border); background: var(--card); font-size: 15px; font-weight: 700; font-family: inherit; color: var(--text-sub); cursor: pointer; text-align: center; transition: all 0.15s; -webkit-tap-highlight-color: transparent; }
+  .big-btn.selected { background: var(--green-pale); border-color: var(--green-light); color: var(--green-dark); }
+  .big-btn .icon { font-size: 22px; display: block; margin-bottom: 4px; }
+
+  /* 天気ボタン */
+  .weather-row { display: flex; gap: 8px; margin-bottom: 6px; }
+  .weather-btn { flex: 1; height: 60px; border-radius: var(--radius); border: 1px solid var(--border); background: var(--card); font-size: 24px; cursor: pointer; transition: all 0.15s; -webkit-tap-highlight-color: transparent; }
+  .weather-btn.sel-sunny { background: #FFF9C4; border-color: #F9A825; }
+  .weather-btn.sel-cloudy { background: #ECEFF1; border-color: #90A4AE; }
+  .weather-btn.sel-rainy { background: var(--sky); border-color: var(--sky-border); }
+
+  /* 温度・水分ボタン */
+  .num-selector { display: flex; flex-wrap: wrap; gap: 6px; }
+  .num-btn { flex: 1; min-width: 60px; height: 36px; padding: 0 8px; border-radius: var(--radius-sm); border: 1px solid var(--border); background: var(--bg); font-size: 12px; font-family: inherit; color: var(--text-sub); cursor: pointer; transition: all 0.15s; -webkit-tap-highlight-color: transparent; text-align: center; }
+  .num-btn.selected { background: var(--green-pale); border-color: var(--green-light); color: var(--green-dark); font-weight: 700; }
+  .num-btn.sel-warn { background: var(--amber-pale); border-color: var(--amber-border); color: var(--amber-text); font-weight: 700; }
+  .num-btn.sel-ok { background: var(--sky); border-color: var(--sky-border); color: var(--sky-text); font-weight: 700; }
+
+  /* 汎用カード */
+  .info-card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); margin-bottom: 6px; padding: 14px; }
+  .info-label { font-size: 14px; font-weight: 500; color: var(--text); margin-bottom: 4px; }
+  .info-label-id { font-size: 12px; color: var(--text-sub); margin-bottom: 10px; }
+
+  /* 水やり結果 */
+  .water-result { background: var(--sky); border: 1px solid var(--sky-border); border-radius: var(--radius); padding: 14px; margin-top: 10px; display: none; }
+  .water-result.visible { display: block; }
+  .water-result-title { font-size: 13px; color: var(--sky-text); font-weight: 700; margin-bottom: 4px; }
+  .water-result-val { font-size: 28px; font-weight: 700; color: var(--sky-text); }
+  .water-result-unit { font-size: 14px; color: var(--sky-text); }
+  .water-zero { background: var(--green-pale); border-color: var(--green-light); }
+  .water-zero .water-result-title { color: var(--green-dark); }
+  .water-zero .water-result-val { color: var(--green-dark); }
+  .water-zero .water-result-unit { color: var(--green-dark); }
+
+  /* チェックカード */
+  .check-card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); margin-bottom: 6px; cursor: pointer; -webkit-tap-highlight-color: transparent; transition: border-color 0.15s, background 0.15s; }
+  .check-card.checked { background: var(--green-pale); border-color: var(--green-light); }
+  .check-inner { display: flex; align-items: center; gap: 12px; padding: 12px 14px; }
+  .custom-cb { width: 22px; height: 22px; border-radius: 6px; border: 2px solid var(--border); background: var(--bg); flex-shrink: 0; display: flex; align-items: center; justify-content: center; transition: background 0.15s, border-color 0.15s; }
+  .check-card.checked .custom-cb { background: var(--green-mid); border-color: var(--green-mid); }
+  .custom-cb svg { display: none; width: 13px; height: 13px; }
+  .check-card.checked .custom-cb svg { display: block; }
+  .check-texts { flex: 1; }
+  .check-ja { font-size: 14px; font-weight: 500; color: var(--text); line-height: 1.4; }
+  .check-id { font-size: 12px; color: var(--text-sub); margin-top: 2px; }
+  .check-card.checked .check-ja { color: var(--green-dark); }
+
+  /* サブセクション */
+  .sub-section { margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--border); display: none; }
+  .sub-section.visible { display: block; }
+
+  /* 枚数入力 */
+  .count-input-row { display: flex; gap: 8px; align-items: center; margin-top: 6px; }
+  .count-preset { height: 36px; padding: 0 12px; border-radius: var(--radius-sm); border: 1px solid var(--border); background: var(--bg); font-size: 14px; font-family: inherit; color: var(--text-sub); cursor: pointer; white-space: nowrap; transition: all 0.15s; }
+  .count-preset.selected { background: var(--green-pale); border-color: var(--green-light); color: var(--green-dark); font-weight: 700; }
+  .count-custom { flex: 1; height: 36px; padding: 0 12px; font-size: 14px; font-family: inherit; border-radius: var(--radius-sm); border: 1px solid var(--border); background: var(--bg); color: var(--text); }
+  .count-custom:focus { outline: 2px solid var(--green-light); border-color: transparent; }
+
+  /* フッター */
+  .footer { margin-top: 1.5rem; display: flex; flex-direction: column; gap: 12px; }
+  .submit-btn { width: 100%; height: 50px; border-radius: var(--radius); border: none; background: var(--green-mid); color: #fff; font-size: 16px; font-weight: 700; font-family: inherit; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; transition: background 0.15s, transform 0.1s; -webkit-tap-highlight-color: transparent; }
+  .submit-btn:active { transform: scale(0.98); background: var(--green-dark); }
+  .submit-btn svg { width: 20px; height: 20px; }
+  .done-card { display: none; background: var(--green-pale); border: 1px solid var(--green-light); border-radius: var(--radius); padding: 1.5rem; text-align: center; margin-top: 1rem; }
+  .done-icon { font-size: 40px; margin-bottom: 0.5rem; }
+  .done-title { font-size: 17px; font-weight: 700; color: var(--green-dark); margin-bottom: 4px; }
+  .done-sub { font-size: 13px; color: var(--text-sub); }
+  .done-reset { margin-top: 1rem; height: 36px; padding: 0 20px; border-radius: var(--radius-sm); border: 1px solid var(--green-mid); background: transparent; color: var(--green-mid); font-size: 13px; font-family: inherit; cursor: pointer; }
+
+  textarea { width: 100%; min-height: 60px; padding: 10px 14px; font-size: 14px; font-family: inherit; border-radius: var(--radius); border: 1px solid var(--border); background: var(--card); color: var(--text); resize: vertical; }
+  textarea:focus { outline: 2px solid var(--green-light); border-color: transparent; }
+  textarea::placeholder { color: var(--text-sub); }
+</style>
+</head>
+<body>
+<header>
+  <div class="header-top">
+    <div class="logo-leaf">🌱</div>
+    <div>
+      <div class="header-title">小野瀬農園　育苗管理</div>
+      <div class="header-sub">Manajemen Bibit — Onose Farm</div>
+    </div>
+  </div>
+</header>
+
+<main>
+  <div class="meta-card">
+    <select id="sel-name">
+      <option value="">氏名 / Nama ▾</option>
+      <option>根本</option><option>須藤</option><option>ディカ</option>
+      <option>ランディタ</option><option>ナタ</option><option>タマ</option>
+      <option>アディ</option><option>アンドレ</option><option>スズキ</option>
+    </select>
+    <input type="date" id="inp-date">
+  </div>
+
+  <!-- 天気（共通） -->
+  <div class="section-label">天気 / Cuaca</div>
+  <div class="weather-row">
+    <button class="weather-btn" id="common-sunny" onclick="selectCommonWeather('sunny')">☀️</button>
+    <button class="weather-btn" id="common-cloudy" onclick="selectCommonWeather('cloudy')">☁️</button>
+    <button class="weather-btn" id="common-rainy" onclick="selectCommonWeather('rainy')">☂️</button>
+  </div>
+
+  <!-- 温度（共通） -->
+  <div class="section-label">温度 / Suhu</div>
+  <div class="info-card">
+    <div class="num-selector" id="common-temp-btns">
+      <button class="num-btn" onclick="selectCommonTemp(this,'40～35℃')">40〜35℃</button>
+      <button class="num-btn" onclick="selectCommonTemp(this,'35～30℃')">35〜30℃</button>
+      <button class="num-btn" onclick="selectCommonTemp(this,'30～25℃')">30〜25℃</button>
+      <button class="num-btn" onclick="selectCommonTemp(this,'25℃以下')">25℃以下</button>
+    </div>
+  </div>
+
+  <!-- 場所選択 -->
+  <div class="section-label">場所 / Lokasi</div>
+  <div class="big-select-row">
+    <button class="big-btn" id="btn-house" onclick="selectLocation('house')">
+      <span class="icon">🏠</span>ハウス
+    </button>
+    <button class="big-btn" id="btn-outside" onclick="selectLocation('outside')">
+      <span class="icon">🌾</span>外育苗
+    </button>
+  </div>
+
+  <!-- ハウス専用フォーム -->
+  <div id="form-house" style="display:none">
+
+    <!-- 水やり前/後 -->
+    <div class="section-label">タイミング / Waktu</div>
+    <div class="big-select-row">
+      <button class="big-btn" id="btn-before" onclick="selectTiming('before')">
+        <span class="icon">🪣</span>水やり前
+      </button>
+      <button class="big-btn" id="btn-after" onclick="selectTiming('after')">
+        <span class="icon">✅</span>水やり後
+      </button>
+    </div>
+
+
+    <!-- 苗の枚数 -->
+    <div id="sec-count">
+    <div class="section-label">苗の枚数 / Jumlah Nampan</div>
+    <div class="info-card">
+      <div class="info-label">枚数を選択または入力 / Pilih atau masukkan jumlah</div>
+      <div class="count-input-row">
+        <button class="count-preset" id="preset-285" onclick="selectPreset(285)">285枚</button>
+        <button class="count-preset" id="preset-290" onclick="selectPreset(290)">290枚</button>
+        <input type="number" class="count-custom" id="custom-count" placeholder="その他の枚数" min="1" max="9999" oninput="onCustomCount()">
+      </div>
+    </div>
+
+    </div><!-- /sec-count -->
+    <!-- 現在の水分量 -->
+    <div id="sec-moisture">
+    <div class="section-label">現在の水分量 / Kadar Air Saat Ini</div>
+    <div class="info-card">
+      <div class="num-selector" id="moisture-btns">
+        <button class="num-btn" onclick="selectMoisture(this,'3.9～4.3','low')">3.9〜4.3</button>
+        <button class="num-btn" onclick="selectMoisture(this,'4.4～4.6','mid')">4.4〜4.6</button>
+        <button class="num-btn" onclick="selectMoisture(this,'4.7～5.0','high')">4.7〜5.0</button>
+      </div>
+
+      <!-- 水やり計算結果 -->
+      <div class="water-result" id="water-result">
+        <div class="water-result-title" id="water-title">💧 必要な水やり量 / Jumlah penyiraman</div>
+        <div>
+          <span class="water-result-val" id="water-val">—</span>
+          <span class="water-result-unit" id="water-unit"></span>
+        </div>
+        <div style="font-size:12px;color:var(--sky-text);margin-top:4px" id="water-formula"></div>
+      </div>
+
+      <!-- 社長に連絡チェック -->
+      <div class="sub-section" id="sec-contact">
+        <div class="check-card" onclick="toggleCheck(this)">
+          <div class="check-inner">
+            <div class="custom-cb"><svg viewBox="0 0 13 13" fill="none" stroke="#fff" stroke-width="2.5"><polyline points="2,7 5,10 11,3"/></svg></div>
+            <div class="check-texts">
+              <div class="check-ja">📸 写真アルバムにのせた</div>
+              <div class="check-id">Sudah upload foto ke album</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    </div><!-- /sec-moisture -->
+
+    <!-- 水やり後：重さチェック -->
+    <div id="sec-after-weight" style="display:none">
+    <div class="section-label">水やり後の重さ / Berat Setelah Penyiraman</div>
+    <div class="info-card">
+      <div class="info-label">1枚あたりの重さ / Berat per nampan</div>
+      <div class="info-label-id">Pilih berat nampan setelah disiram</div>
+      <div class="big-select-row" style="margin-top:8px">
+        <button class="big-btn" id="btn-weight-ok" onclick="selectWeight('ok')">
+          <span class="icon">💮</span>4.6kg以上
+        </button>
+        <button class="big-btn" id="btn-weight-low" onclick="selectWeight('low')">
+          <span class="icon">⚠️</span>4.5kg以下
+        </button>
+      </div>
+      <div id="weight-result-ok" style="display:none;margin-top:10px;padding:10px 12px;background:var(--green-pale);border:1px solid var(--green-light);border-radius:var(--radius-sm);font-size:14px;color:var(--green-dark);font-weight:700;">
+        💮 良好です！ / Bagus!
+      </div>
+      <div id="weight-result-low" style="display:none;margin-top:10px;padding:10px 12px;background:var(--amber-pale);border:1px solid var(--amber-border);border-radius:var(--radius-sm);">
+        <div style="font-size:13px;font-weight:700;color:var(--amber-text);margin-bottom:8px;">⚠️ 少ないかも / Mungkin kurang</div>
+        <div style="font-size:13px;font-weight:500;color:var(--text-sub);margin-bottom:8px;">社長に重さを連絡 / Laporkan berat ke direktur</div>
+        <div class="yn-btns">
+          <button class="yn-btn" id="weight-contact-done" onclick="selectWeightContact('done')">完了 / Selesai</button>
+          <button class="yn-btn" id="weight-contact-notyet" onclick="selectWeightContact('notyet')">未了 / Belum</button>
+        </div>
+      </div>
+    </div>
+    </div>
+
+    <!-- 曇り・雨のときの社長連絡のみ -->
+    <div id="sec-contact-only" style="display:none">
+    <div class="section-label">報告 / Pelaporan</div>
+    <div class="check-card" onclick="toggleCheck(this)">
+      <div class="check-inner">
+        <div class="custom-cb"><svg viewBox="0 0 13 13" fill="none" stroke="#fff" stroke-width="2.5"><polyline points="2,7 5,10 11,3"/></svg></div>
+        <div class="check-texts">
+          <div class="check-ja">社長に連絡した</div>
+          <div class="check-id">Sudah lapor ke direktur</div>
+        </div>
+      </div>
+    </div>
+    </div><!-- /sec-contact-only -->
+    <!-- コメント -->
+    <div class="section-label">その他 / Lainnya</div>
+    <textarea id="house-comment" placeholder="コメント・備考 / Komentar & Catatan"></textarea>
+  </div>
+
+  <!-- 外育苗フォーム -->
+  <div id="form-outside" style="display:none">
+
+
+
+    <!-- 苗の枚数 -->
+    <div id="out-sec-count">
+    <div class="section-label">苗の枚数 / Jumlah Nampan</div>
+    <div class="info-card">
+      <div class="info-label">枚数を選択または入力 / Pilih atau masukkan jumlah</div>
+      <div class="count-input-row">
+        <button class="count-preset" id="out-preset-285" onclick="selectOutPreset(285)">285枚</button>
+        <button class="count-preset" id="out-preset-290" onclick="selectOutPreset(290)">290枚</button>
+        <input type="number" class="count-custom" id="out-custom-count" placeholder="その他の枚数" min="1" max="9999" oninput="onOutCustomCount()">
+      </div>
+    </div>
+    </div>
+
+    <!-- 現在の水分量 -->
+    <div id="out-sec-moisture">
+    <div class="section-label">現在の水分量 / Kadar Air Saat Ini</div>
+    <div class="info-card">
+      <div class="num-selector" id="out-moisture-btns">
+        <button class="num-btn" onclick="selectOutMoisture(this,'3.9～4.3','low')">3.9〜4.3</button>
+        <button class="num-btn" onclick="selectOutMoisture(this,'4.4～4.6','mid')">4.4〜4.6</button>
+        <button class="num-btn" onclick="selectOutMoisture(this,'4.7～5.0','high')">4.7〜5.0</button>
+      </div>
+      <div class="water-result" id="out-water-result">
+        <div class="water-result-title" id="out-water-title">💧 必要な水やり量 / Jumlah penyiraman</div>
+        <div>
+          <span class="water-result-val" id="out-water-val">—</span>
+          <span class="water-result-unit" id="out-water-unit"></span>
+        </div>
+        <div style="font-size:12px;color:var(--sky-text);margin-top:4px" id="out-water-formula"></div>
+      </div>
+      <div class="sub-section" id="out-sec-contact">
+        <div class="check-card" onclick="toggleCheck(this)">
+          <div class="check-inner">
+            <div class="custom-cb"><svg viewBox="0 0 13 13" fill="none" stroke="#fff" stroke-width="2.5"><polyline points="2,7 5,10 11,3"/></svg></div>
+            <div class="check-texts">
+              <div class="check-ja">📸 写真アルバムにのせた</div>
+              <div class="check-id">Sudah upload foto ke album</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    </div>
+
+    <!-- 曇り・雨のときの社長連絡のみ -->
+    <div id="out-sec-contact-only" style="display:none">
+    <div class="section-label">報告 / Pelaporan</div>
+    <div class="check-card" onclick="toggleCheck(this)">
+      <div class="check-inner">
+        <div class="custom-cb"><svg viewBox="0 0 13 13" fill="none" stroke="#fff" stroke-width="2.5"><polyline points="2,7 5,10 11,3"/></svg></div>
+        <div class="check-texts">
+          <div class="check-ja">社長に連絡した</div>
+          <div class="check-id">Sudah lapor ke direktur</div>
+        </div>
+      </div>
+    </div>
+    </div>
+
+    <div class="section-label">その他 / Lainnya</div>
+    <textarea id="outside-comment" placeholder="コメント・備考 / Komentar & Catatan"></textarea>
+  </div>
+
+  <div class="footer">
+    <button class="submit-btn" onclick="submitReport()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+      送信 / Kirim Laporan
+    </button>
+  </div>
+
+  <div class="done-card" id="done-card">
+    <div class="done-icon">✅</div>
+    <div class="done-title">報告を送信しました！<br>Laporan terkirim!</div>
+    <div class="done-sub" id="done-sub"></div>
+    <button class="done-reset" onclick="resetForm()">次の報告へ / Laporan berikutnya</button>
+  </div>
+</main>
+
+<script>
+function setVh() { document.body.style.height = window.innerHeight + 'px'; }
+setVh(); window.addEventListener('resize', setVh);
+document.getElementById('inp-date').value = new Date().toISOString().slice(0,10);
+
+let currentLocation = null;
+let commonWeather = null;
+let commonTemp = null;
+
+function selectCommonWeather(w) {
+  commonWeather = w;
+  document.getElementById('common-sunny').className = 'weather-btn' + (w==='sunny' ? ' sel-sunny' : '');
+  document.getElementById('common-cloudy').className = 'weather-btn' + (w==='cloudy' ? ' sel-cloudy' : '');
+  document.getElementById('common-rainy').className = 'weather-btn' + (w==='rainy' ? ' sel-rainy' : '');
+}
+
+function selectCommonTemp(btn, val) {
+  commonTemp = val;
+  document.querySelectorAll('#common-temp-btns .num-btn').forEach(b => b.className='num-btn');
+  btn.classList.add('selected');
+}
+let currentTiming = null;
+
+let currentWeight = null;
+let currentWeightContact = null;
+
+function selectTiming(t) {
+  currentTiming = t;
+  document.getElementById('btn-before').className = 'big-btn' + (t==='before' ? ' selected' : '');
+  document.getElementById('btn-after').className = 'big-btn' + (t==='after' ? ' selected' : '');
+  document.getElementById('sec-weather').style.display = t==='before' ? '' : 'none';
+  document.getElementById('sec-after-weight').style.display = t==='after' ? '' : 'none';
+  if (t === 'after') {
+    // 水やり後は天気・温度・枚数・水分量を非表示
+    currentWeather = null;
+    document.getElementById('w-sunny').className = 'weather-btn';
+    document.getElementById('w-cloudy').className = 'weather-btn';
+    document.getElementById('w-rainy').className = 'weather-btn';
+    document.getElementById('sec-temp').style.display = 'none';
+    document.getElementById('sec-count').style.display = 'none';
+    document.getElementById('sec-moisture').style.display = 'none';
+    document.getElementById('sec-contact-only').style.display = 'none';
+  } else {
+    document.getElementById('sec-temp').style.display = '';
+    document.getElementById('sec-count').style.display = '';
+    document.getElementById('sec-moisture').style.display = '';
+  }
+}
+
+function selectWeight(w) {
+  currentWeight = w;
+  document.getElementById('btn-weight-ok').className = 'big-btn' + (w==='ok' ? ' selected' : '');
+  document.getElementById('btn-weight-low').className = 'big-btn' + (w==='low' ? ' selected' : '');
+  document.getElementById('weight-result-ok').style.display = w==='ok' ? 'block' : 'none';
+  document.getElementById('weight-result-low').style.display = w==='low' ? 'block' : 'none';
+  // リセット
+  currentWeightContact = null;
+  document.getElementById('weight-contact-done').className = 'yn-btn';
+  document.getElementById('weight-contact-notyet').className = 'yn-btn';
+}
+
+function selectWeightContact(v) {
+  currentWeightContact = v;
+  document.getElementById('weight-contact-done').className = 'yn-btn' + (v==='done' ? ' sel-yes' : '');
+  document.getElementById('weight-contact-notyet').className = 'yn-btn' + (v==='notyet' ? ' sel-no' : '');
+}
+let currentWeather = null;
+let currentTemp = null;
+let currentMoisture = null;
+let currentMoistureLevel = null;
+let currentCount = 0;
+
+let outWeather = null;
+let outTemp = null;
+let outCount = 0;
+let outMoistureLevel = null;
+
+function selectWeatherOut(w) {
+  outWeather = w;
+  document.getElementById('ow-sunny').className = 'weather-btn' + (w==='sunny' ? ' sel-sunny' : '');
+  document.getElementById('ow-cloudy').className = 'weather-btn' + (w==='cloudy' ? ' sel-cloudy' : '');
+  document.getElementById('ow-rainy').className = 'weather-btn' + (w==='rainy' ? ' sel-rainy' : '');
+  const isSunny = (w === 'sunny');
+  document.getElementById('out-sec-temp').style.display = isSunny ? '' : 'none';
+  document.getElementById('out-sec-count').style.display = isSunny ? '' : 'none';
+  document.getElementById('out-sec-moisture').style.display = isSunny ? '' : 'none';
+  document.getElementById('out-sec-contact-only').style.display = isSunny ? 'none' : '';
+}
+
+function selectOutTemp(btn, val) {
+  outTemp = val;
+  document.querySelectorAll('#out-temp-btns .num-btn').forEach(b => b.className='num-btn');
+  btn.classList.add('selected');
+}
+
+function selectOutPreset(count) {
+  outCount = count;
+  document.getElementById('out-preset-285').className = 'count-preset' + (count===285 ? ' selected' : '');
+  document.getElementById('out-preset-290').className = 'count-preset' + (count===290 ? ' selected' : '');
+  document.getElementById('out-custom-count').value = '';
+  calcOutWater();
+}
+
+function onOutCustomCount() {
+  const val = parseInt(document.getElementById('out-custom-count').value);
+  outCount = isNaN(val) ? 0 : val;
+  document.getElementById('out-preset-285').className = 'count-preset';
+  document.getElementById('out-preset-290').className = 'count-preset';
+  calcOutWater();
+}
+
+function selectOutMoisture(btn, val, level) {
+  outMoistureLevel = level;
+  document.querySelectorAll('#out-moisture-btns .num-btn').forEach(b => b.className='num-btn');
+  if (level==='low') btn.classList.add('sel-warn');
+  else if (level==='mid') btn.classList.add('selected');
+  else btn.classList.add('sel-ok');
+  calcOutWater();
+  document.getElementById('out-sec-contact').className = 'sub-section visible';
+}
+
+function calcOutWater() {
+  if (!outMoistureLevel || !outCount) return;
+  const resultEl = document.getElementById('out-water-result');
+  const valEl = document.getElementById('out-water-val');
+  const unitEl = document.getElementById('out-water-unit');
+  const formulaEl = document.getElementById('out-water-formula');
+  const titleEl = document.getElementById('out-water-title');
+  resultEl.className = 'water-result visible';
+  if (outMoistureLevel === 'low') {
+    valEl.textContent = outCount; unitEl.textContent = 'ℓ';
+    formulaEl.textContent = outCount + '枚 × 1ℓ = ' + outCount + 'ℓ';
+    titleEl.textContent = '💧 必要な水やり量 / Jumlah penyiraman';
+    resultEl.className = 'water-result visible';
+  } else if (outMoistureLevel === 'mid') {
+    const total = outCount * 0.5;
+    valEl.textContent = total; unitEl.textContent = 'ℓ';
+    formulaEl.textContent = outCount + '枚 × 0.5ℓ = ' + total + 'ℓ';
+    titleEl.textContent = '💧 必要な水やり量 / Jumlah penyiraman';
+    resultEl.className = 'water-result visible';
+  } else {
+    valEl.textContent = '水やり不要'; unitEl.textContent = '';
+    formulaEl.textContent = outCount + '枚 × 0ℓ = 0ℓ';
+    titleEl.textContent = '✅ 水やり不要 / Tidak perlu penyiraman';
+    resultEl.className = 'water-result water-zero visible';
+  }
+}
+
+function selectLocation(loc) {
+  currentLocation = loc;
+  document.getElementById('btn-house').className = 'big-btn' + (loc==='house' ? ' selected' : '');
+  document.getElementById('btn-outside').className = 'big-btn' + (loc==='outside' ? ' selected' : '');
+  document.getElementById('form-house').style.display = loc==='house' ? '' : 'none';
+  document.getElementById('form-outside').style.display = loc==='outside' ? '' : 'none';
+}
+
+function selectWeather(w) {
+  currentWeather = w;
+  document.getElementById('w-sunny').className = 'weather-btn' + (w==='sunny' ? ' sel-sunny' : '');
+  document.getElementById('w-cloudy').className = 'weather-btn' + (w==='cloudy' ? ' sel-cloudy' : '');
+  document.getElementById('w-rainy').className = 'weather-btn' + (w==='rainy' ? ' sel-rainy' : '');
+  // 曇り・雨のときは温度・枚数・水分量を非表示、社長連絡のみ表示
+  const isSunny = (w === 'sunny');
+  document.getElementById('sec-temp').style.display = isSunny ? '' : 'none';
+  document.getElementById('sec-count').style.display = isSunny ? '' : 'none';
+  document.getElementById('sec-moisture').style.display = isSunny ? '' : 'none';
+  document.getElementById('sec-contact-only').style.display = isSunny ? 'none' : '';
+}
+
+function selectTemp(btn, val) {
+  currentTemp = val;
+  document.querySelectorAll('#temp-btns .num-btn').forEach(b => b.className='num-btn');
+  btn.classList.add('selected');
+}
+
+function selectPreset(count) {
+  currentCount = count;
+  document.getElementById('preset-285').className = 'count-preset' + (count===285 ? ' selected' : '');
+  document.getElementById('preset-290').className = 'count-preset' + (count===290 ? ' selected' : '');
+  document.getElementById('custom-count').value = '';
+  calcWater();
+}
+
+function onCustomCount() {
+  const val = parseInt(document.getElementById('custom-count').value);
+  currentCount = isNaN(val) ? 0 : val;
+  document.getElementById('preset-285').className = 'count-preset';
+  document.getElementById('preset-290').className = 'count-preset';
+  calcWater();
+}
+
+function selectMoisture(btn, val, level) {
+  currentMoisture = val;
+  currentMoistureLevel = level;
+  document.querySelectorAll('#moisture-btns .num-btn').forEach(b => b.className='num-btn');
+  if (level==='low') btn.classList.add('sel-warn');
+  else if (level==='mid') btn.classList.add('selected');
+  else btn.classList.add('sel-ok');
+  calcWater();
+  // 社長連絡チェックは常に表示
+  document.getElementById('sec-contact').className = 'sub-section visible';
+}
+
+function calcWater() {
+  if (!currentMoistureLevel || !currentCount) return;
+  const resultEl = document.getElementById('water-result');
+  const valEl = document.getElementById('water-val');
+  const unitEl = document.getElementById('water-unit');
+  const formulaEl = document.getElementById('water-formula');
+  const titleEl = document.getElementById('water-title');
+
+  resultEl.className = 'water-result visible';
+
+  if (currentMoistureLevel === 'low') {
+    const total = currentCount * 1;
+    valEl.textContent = total.toLocaleString();
+    unitEl.textContent = 'ℓ';
+    formulaEl.textContent = currentCount + '枚 × 1ℓ = ' + total + 'ℓ';
+    titleEl.textContent = '💧 必要な水やり量 / Jumlah penyiraman';
+    resultEl.className = 'water-result visible';
+  } else if (currentMoistureLevel === 'mid') {
+    const total = currentCount * 0.5;
+    valEl.textContent = total.toLocaleString();
+    unitEl.textContent = 'ℓ';
+    formulaEl.textContent = currentCount + '枚 × 0.5ℓ = ' + total + 'ℓ';
+    titleEl.textContent = '💧 必要な水やり量 / Jumlah penyiraman';
+    resultEl.className = 'water-result visible';
+  } else {
+    valEl.textContent = '水やり不要';
+    unitEl.textContent = '';
+    formulaEl.textContent = currentCount + '枚 × 0ℓ = 0ℓ';
+    titleEl.textContent = '✅ 水やり不要 / Tidak perlu penyiraman';
+    resultEl.className = 'water-result water-zero visible';
+  }
+}
+
+function toggleCheck(card) { card.classList.toggle('checked'); }
+
+const GAS_URL = 'https://script.google.com/macros/s/AKfycbxMcUsNeg92csvnlXjuvW4D3D3Us7vS-j7m8NDYCwrCWM_OdBdGJuKFfV3xdy-nLVTX/exec';
+const GROUP_ID = 'Ce9d0617801314cecc9c66be426bdf19f';
+
+function submitReport() {
+  const name = document.getElementById('sel-name').value;
+  const date = document.getElementById('inp-date').value;
+  if (!name) { alert('氏名を選んでください / Pilih nama'); return; }
+  if (!date) { alert('日付を入力してください / Masukkan tanggal'); return; }
+  if (!currentLocation) { alert('場所を選んでください / Pilih lokasi'); return; }
+
+  const d = new Date(date);
+  const dateStr = d.getFullYear()+'年'+(d.getMonth()+1)+'月'+d.getDate()+'日';
+  const locLabel = currentLocation==='house' ? '🏠 ハウス' : '🌿 外育苗';
+
+  const items = [];
+  items.push('📍 場所: ' + locLabel);
+
+  if (currentLocation === 'house') {
+    if (commonWeather) {
+      const wLabel = {'sunny':'☀️ 晴れ','cloudy':'☁️ 曇り','rainy':'☂️ 雨'}[commonWeather];
+      items.push('🌤 天気: ' + wLabel);
+    }
+    if (commonTemp) items.push('🌡 温度: ' + commonTemp);
+    if (currentTiming) items.push('⏱ タイミング: ' + (currentTiming==='before' ? '水やり前' : '水やり後'));
+    if (currentTiming === 'after' && currentWeight) {
+      items.push('⚖️ 重さ: ' + (currentWeight==='ok' ? '4.6kg以上 💮' : '4.5kg以下 ⚠️'));
+      if (currentWeightContact) items.push('📞 社長連絡: ' + (currentWeightContact==='done' ? '完了' : '未了'));
+    }
+    if (currentWeather) {
+      const wLabel = {'sunny':'☀️ 晴れ','cloudy':'☁️ 曇り','rainy':'☂️ 雨'}[currentWeather];
+      items.push('🌤 天気: ' + wLabel);
+    }
+    if (currentTemp) items.push('🌡 温度: ' + currentTemp);
+    if (currentCount) items.push('🌱 苗の枚数: ' + currentCount + '枚');
+    if (currentMoisture) {
+      items.push('💦 水分量: ' + currentMoisture);
+      if (currentMoistureLevel==='low') items.push('💧 水やり: ' + currentCount + 'ℓ（×1ℓ）');
+      else if (currentMoistureLevel==='mid') items.push('💧 水やり: ' + (currentCount*0.5) + 'ℓ（×0.5ℓ）');
+      else items.push('✅ 水やり不要（×0ℓ）');
+    }
+    const contacted = document.querySelector('#sec-contact .check-card.checked');
+    if (contacted) items.push('📞 社長に連絡済み');
+    const comment = document.getElementById('house-comment').value;
+    if (comment) items.push('💬 ' + comment);
+  } else {
+    if (outWeather) {
+      const wLabel = {'sunny':'☀️ 晴れ','cloudy':'☁️ 曇り','rainy':'☂️ 雨'}[outWeather];
+      items.push('🌤 天気: ' + wLabel);
+    }
+    if (outTemp) items.push('🌡 温度: ' + outTemp);
+    if (outCount) items.push('🌱 苗の枚数: ' + outCount + '枚');
+    if (outMoistureLevel) {
+      if (outMoistureLevel==='low') items.push('💧 水やり: ' + outCount + 'ℓ（×1ℓ）');
+      else if (outMoistureLevel==='mid') items.push('💧 水やり: ' + (outCount*0.5) + 'ℓ（×0.5ℓ）');
+      else items.push('✅ 水やり不要（×0ℓ）');
+    }
+    const comment = document.getElementById('outside-comment').value;
+    if (comment) items.push('💬 ' + comment);
+  }
+
+  const msg = '【🌱 育苗管理】\n👤 ' + name + '　📅 ' + dateStr + '\n─────────────\n' + items.join('\n');
+
+  fetch(GAS_URL, {
+    method: 'POST',
+    mode: 'no-cors',
+    headers: { 'Content-Type': 'text/plain' },
+    body: JSON.stringify({ groupId: GROUP_ID, name: name, date: dateStr, tab: 'ikubyou', items: items })
+  }).catch(function(e) { console.log(e); });
+
+  document.getElementById('done-sub').textContent = name + '　' + dateStr + '　' + locLabel;
+  document.getElementById('done-card').style.display = 'block';
+  document.getElementById('done-card').scrollIntoView({behavior:'smooth',block:'nearest'});
+}
+
+function resetForm() {
+  currentLocation = null; currentTiming = null; currentWeather = null; commonWeather = null; commonTemp = null; currentTemp = null;
+  currentMoisture = null; currentMoistureLevel = null; currentCount = 0;
+  document.getElementById('btn-house').className = 'big-btn';
+  document.getElementById('common-sunny').className = 'weather-btn';
+  document.getElementById('common-cloudy').className = 'weather-btn';
+  document.getElementById('common-rainy').className = 'weather-btn';
+  document.querySelectorAll('#common-temp-btns .num-btn').forEach(b => b.className='num-btn');
+  document.getElementById('btn-before').className = 'big-btn';
+  currentWeight = null; currentWeightContact = null;
+  document.getElementById('sec-after-weight').style.display = 'none';
+  document.getElementById('btn-weight-ok').className = 'big-btn';
+  document.getElementById('btn-weight-low').className = 'big-btn';
+  document.getElementById('weight-result-ok').style.display = 'none';
+  document.getElementById('weight-result-low').style.display = 'none';
+  document.getElementById('btn-after').className = 'big-btn';
+  document.getElementById('sec-weather').style.display = 'none';
+  document.getElementById('btn-outside').className = 'big-btn';
+  document.getElementById('form-house').style.display = 'none';
+  document.getElementById('form-outside').style.display = 'none';
+  document.querySelectorAll('.num-btn').forEach(b => b.className='num-btn');
+  document.querySelectorAll('.count-preset').forEach(b => b.className='count-preset');
+  document.querySelectorAll('.weather-btn').forEach(b => b.className='weather-btn');
+  document.querySelectorAll('.check-card').forEach(c => c.classList.remove('checked'));
+  document.querySelectorAll('textarea, input[type=number]').forEach(t => t.value='');
+  document.getElementById('water-result').className = 'water-result';
+  document.getElementById('sec-contact').className = 'sub-section';
+  outWeather = null; outTemp = null; outCount = 0; outMoistureLevel = null;
+  document.getElementById('out-water-result').className = 'water-result';
+  document.getElementById('out-sec-contact').className = 'sub-section';
+  document.getElementById('out-sec-contact-only').style.display = 'none';
+  document.getElementById('out-sec-temp').style.display = '';
+  document.getElementById('out-sec-count').style.display = '';
+  document.getElementById('out-sec-moisture').style.display = '';
+  document.getElementById('done-card').style.display = 'none';
+  document.getElementById('sel-name').value = '';
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+</script>
+</body>
+</html>
