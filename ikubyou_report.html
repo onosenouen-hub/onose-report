@@ -601,7 +601,19 @@ function submitReport() {
   const date = document.getElementById('inp-date').value;
   if (!name) { alert('氏名を選んでください / Pilih nama'); return; }
   if (!date) { alert('日付を入力してください / Masukkan tanggal'); return; }
+  if (!commonWeather) { alert('天気を選んでください / Pilih cuaca'); return; }
+  if (!commonTemp) { alert('温度を選んでください / Pilih suhu'); return; }
   if (!currentLocation) { alert('場所を選んでください / Pilih lokasi'); return; }
+  if (currentLocation === 'house') {
+    if (!currentTiming) { alert('タイミングを選んでください（水やり前/後）/ Pilih waktu'); return; }
+    if (currentTiming === 'before') {
+      if (!currentCount) { alert('苗の枚数を入力してください / Masukkan jumlah nampan'); return; }
+      if (!currentMoistureLevel) { alert('水分量を選んでください / Pilih kadar air'); return; }
+    }
+  } else {
+    if (!outCount) { alert('苗の枚数を入力してください / Masukkan jumlah nampan'); return; }
+    if (!outMoistureLevel) { alert('水分量を選んでください / Pilih kadar air'); return; }
+  }
 
   const d = new Date(date);
   const dateStr = d.getFullYear()+'年'+(d.getMonth()+1)+'月'+d.getDate()+'日';
