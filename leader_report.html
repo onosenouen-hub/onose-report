@@ -264,25 +264,9 @@
 
   <!-- ===== 終業報告 ===== -->
   <div id="form-owari" style="display:none">
-    <div class="section-label">本日の作業 / Pekerjaan Hari Ini</div>
-    <div class="check-card" onclick="toggleCheck(this)">
-      <div class="check-inner">
-        <div class="custom-cb"><svg viewBox="0 0 13 13" fill="none" stroke="#fff" stroke-width="2.5"><polyline points="2,7 5,10 11,3"/></svg></div>
-        <div class="check-texts">
-          <div class="check-ja">本日の作業は完了した</div>
-          <div class="check-id">Pekerjaan hari ini selesai</div>
-        </div>
-      </div>
-    </div>
-    <div class="check-card" onclick="toggleCheck(this)">
-      <div class="check-inner">
-        <div class="custom-cb"><svg viewBox="0 0 13 13" fill="none" stroke="#fff" stroke-width="2.5"><polyline points="2,7 5,10 11,3"/></svg></div>
-        <div class="check-texts">
-          <div class="check-ja">明日の作業予定を確認した</div>
-          <div class="check-id">Sudah mengecek jadwal kerja besok</div>
-        </div>
-      </div>
-    </div>
+
+    <!-- 片付け -->
+    <div class="section-label">片付け / Pembersihan</div>
     <div class="check-card" onclick="toggleCheck(this)">
       <div class="check-inner">
         <div class="custom-cb"><svg viewBox="0 0 13 13" fill="none" stroke="#fff" stroke-width="2.5"><polyline points="2,7 5,10 11,3"/></svg></div>
@@ -292,34 +276,110 @@
         </div>
       </div>
     </div>
-    <div class="section-label">チーム・安全 / Tim & Keselamatan</div>
     <div class="check-card" onclick="toggleCheck(this)">
       <div class="check-inner">
         <div class="custom-cb"><svg viewBox="0 0 13 13" fill="none" stroke="#fff" stroke-width="2.5"><polyline points="2,7 5,10 11,3"/></svg></div>
         <div class="check-texts">
-          <div class="check-ja">メンバー全員の退勤を確認した</div>
-          <div class="check-id">Sudah memastikan semua anggota selesai</div>
+          <div class="check-ja">コンプレッサーオイルチェック済み</div>
+          <div class="check-id">Cek oli kompresor sudah dilakukan</div>
         </div>
       </div>
     </div>
+
+    <!-- 明日の作業確認 -->
+    <div class="section-label">明日の作業確認 / Konfirmasi Kerja Besok</div>
+    <div class="info-card">
+      <div class="info-label">収穫に必要な人数 / Jumlah orang untuk panen</div>
+      <div class="num-selector" id="tmr-harvest" style="margin-top:8px">
+        <button class="num-btn" onclick="selectNum(this,'tmr-harvest')">0</button>
+        <button class="num-btn" onclick="selectNum(this,'tmr-harvest')">1</button>
+        <button class="num-btn" onclick="selectNum(this,'tmr-harvest')">2</button>
+        <button class="num-btn" onclick="selectNum(this,'tmr-harvest')">3</button>
+        <button class="num-btn" onclick="selectNum(this,'tmr-harvest')">4</button>
+        <button class="num-btn" onclick="selectNum(this,'tmr-harvest')">5</button>
+        <button class="num-btn" onclick="selectNum(this,'tmr-harvest')">6</button>
+        <button class="num-btn" onclick="selectNum(this,'tmr-harvest')">7</button>
+        <button class="num-btn" onclick="selectNum(this,'tmr-harvest')">8</button>
+      </div>
+      <div class="info-label" style="margin-top:12px">皮むきに必要な人数 / Jumlah orang untuk pengupasan</div>
+      <div class="num-selector" id="tmr-peel" style="margin-top:8px">
+        <button class="num-btn" onclick="selectNum(this,'tmr-peel')">0</button>
+        <button class="num-btn" onclick="selectNum(this,'tmr-peel')">1</button>
+        <button class="num-btn" onclick="selectNum(this,'tmr-peel')">2</button>
+        <button class="num-btn" onclick="selectNum(this,'tmr-peel')">3</button>
+        <button class="num-btn" onclick="selectNum(this,'tmr-peel')">4</button>
+        <button class="num-btn" onclick="selectNum(this,'tmr-peel')">5</button>
+        <button class="num-btn" onclick="selectNum(this,'tmr-peel')">6</button>
+        <button class="num-btn" onclick="selectNum(this,'tmr-peel')">7</button>
+        <button class="num-btn" onclick="selectNum(this,'tmr-peel')">8</button>
+      </div>
+      <div class="info-label" style="margin-top:12px">箱詰めに必要な人数 / Jumlah orang untuk pengepakan</div>
+      <div class="num-selector" id="tmr-box" style="margin-top:8px">
+        <button class="num-btn" onclick="selectNum(this,'tmr-box')">0</button>
+        <button class="num-btn" onclick="selectNum(this,'tmr-box')">1</button>
+        <button class="num-btn" onclick="selectNum(this,'tmr-box')">2</button>
+        <button class="num-btn" onclick="selectNum(this,'tmr-box')">3</button>
+        <button class="num-btn" onclick="selectNum(this,'tmr-box')">4</button>
+        <button class="num-btn" onclick="selectNum(this,'tmr-box')">5</button>
+        <button class="num-btn" onclick="selectNum(this,'tmr-box')">6</button>
+        <button class="num-btn" onclick="selectNum(this,'tmr-box')">7</button>
+        <button class="num-btn" onclick="selectNum(this,'tmr-box')">8</button>
+      </div>
+    </div>
+
+    <!-- 本日の作業完了率 -->
+    <div class="section-label">本日の作業 / Pekerjaan Hari Ini</div>
+    <div class="info-card">
+      <div class="info-label">本日の作業はどれくらい終わったか</div>
+      <div class="info-label-id">Berapa persen pekerjaan hari ini selesai?</div>
+      <div class="num-selector" id="owari-pct-btns" style="margin-top:8px">
+        <button class="num-btn" onclick="selectOwariPct(this,0)">0%</button>
+        <button class="num-btn" onclick="selectOwariPct(this,10)">10%</button>
+        <button class="num-btn" onclick="selectOwariPct(this,20)">20%</button>
+        <button class="num-btn" onclick="selectOwariPct(this,30)">30%</button>
+        <button class="num-btn" onclick="selectOwariPct(this,40)">40%</button>
+        <button class="num-btn" onclick="selectOwariPct(this,50)">50%</button>
+        <button class="num-btn" onclick="selectOwariPct(this,60)">60%</button>
+        <button class="num-btn" onclick="selectOwariPct(this,70)">70%</button>
+        <button class="num-btn" onclick="selectOwariPct(this,80)">80%</button>
+        <button class="num-btn" onclick="selectOwariPct(this,90)">90%</button>
+        <button class="num-btn" onclick="selectOwariPct(this,100)">100%</button>
+      </div>
+      <div class="sub-section" id="sec-owari-reason">
+        <div class="warn-title">⚠️ 100%でない理由を教えてください / Jelaskan alasan tidak selesai 100%</div>
+        <textarea id="owari-reason-text" placeholder="理由 / Alasan" style="min-height:52px;margin-top:6px"></textarea>
+      </div>
+    </div>
+
+    <!-- ケガ・機械トラブル -->
+    <div class="section-label">安全・トラブル / Keselamatan & Masalah</div>
+    <div class="yn-card" id="yn-incident">
+      <div class="yn-label">ケガ・機械トラブル</div>
+      <div class="yn-label-id">Kecelakaan / Masalah mesin</div>
+      <div class="yn-btns">
+        <button class="yn-btn" onclick="selectYN(this,'yn-incident','yes')">あり / Ada</button>
+        <button class="yn-btn" onclick="selectYN(this,'yn-incident','no')">なし / Tidak ada</button>
+      </div>
+      <div class="sub-section" id="sec-incident-reason">
+        <div class="warn-title">⚠️ 内容を記入してください / Tuliskan detailnya</div>
+        <textarea id="incident-reason-text" placeholder="内容 / Detail kejadian" style="min-height:52px;margin-top:6px"></textarea>
+      </div>
+    </div>
+
+    <!-- 根本に報告 -->
+    <div class="section-label">報告 / Pelaporan</div>
     <div class="check-card" onclick="toggleCheck(this)">
       <div class="check-inner">
         <div class="custom-cb"><svg viewBox="0 0 13 13" fill="none" stroke="#fff" stroke-width="2.5"><polyline points="2,7 5,10 11,3"/></svg></div>
         <div class="check-texts">
-          <div class="check-ja">けが・トラブルなし（あればコメントに記入）</div>
-          <div class="check-id">Tidak ada kecelakaan/masalah (tulis di komentar jika ada)</div>
+          <div class="check-ja">根本に報告した</div>
+          <div class="check-id">Sudah lapor ke Nemoto</div>
         </div>
       </div>
     </div>
-    <div class="check-card" onclick="toggleCheck(this)">
-      <div class="check-inner">
-        <div class="custom-cb"><svg viewBox="0 0 13 13" fill="none" stroke="#fff" stroke-width="2.5"><polyline points="2,7 5,10 11,3"/></svg></div>
-        <div class="check-texts">
-          <div class="check-ja">他のリーダーに引継ぎ事項を共有した</div>
-          <div class="check-id">Sudah berbagi info serah terima ke pemimpin lain</div>
-        </div>
-      </div>
-    </div>
+
+    <!-- その他コメント -->
+    <div class="section-label">その他 / Lainnya</div>
     <div class="note-wrap">
       <textarea placeholder="コメント・備考 / Komentar & Catatan"></textarea>
     </div>
@@ -374,6 +434,13 @@ function selectNum(btn, groupId) {
   btn.classList.add('selected');
 }
 
+function selectOwariPct(btn, pct) {
+  document.querySelectorAll('#owari-pct-btns .num-btn').forEach(b => b.className='num-btn');
+  btn.classList.add(pct < 100 ? 'selected-ng' : 'selected');
+  document.getElementById('sec-owari-reason').className = 'sub-section' + (pct < 100 ? ' visible' : '');
+  updateProgress();
+}
+
 const ynState = {};
 function selectYN(btn, cardId, val) {
   const card = document.getElementById(cardId);
@@ -382,6 +449,9 @@ function selectYN(btn, cardId, val) {
   ynState[cardId] = val;
   if (cardId === 'yn-disease') {
     document.getElementById('sec-disease-photo').className = 'sub-section' + (val==='yes' ? ' visible' : '');
+  }
+  if (cardId === 'yn-incident') {
+    document.getElementById('sec-incident-reason').className = 'sub-section' + (val==='yes' ? ' visible' : '');
   }
   if (cardId === 'yn-wrinkle') {
     document.getElementById('sec-wrinkle-guide').className = 'sub-section' + (val==='yes' ? ' visible' : '');
