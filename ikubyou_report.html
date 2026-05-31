@@ -653,7 +653,7 @@ function submitReport() {
     if (comment) items.push('💬 ' + comment);
   }
 
-  const msg = '【🌱 育苗管理】\n👤 ' + name + '　📅 ' + dateStr + '\n─────────────\n' + items.join('\n');
+  const msg = '【🌱 育苗管理報告】\n👤 ' + name + '　📅 ' + dateStr + '\n─────────────\n' + items.join('\n');
 
   fetch(GAS_URL, {
     method: 'POST',
