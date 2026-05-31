@@ -482,14 +482,88 @@ function updateProgress() {
   document.getElementById('prog-label').textContent = done+' / '+total;
 }
 
+const GAS_URL = 'https://script.google.com/macros/s/AKfycbxMcUsNeg92csvnlXjuvW4D3D3Us7vS-j7m8NDYCwrCWM_OdBdGJuKFfV3xdy-nLVTX/exec';
+const GROUP_ID = 'Ce9d0617801314cecc9c66be426bdf19f';
+
+function collectItems() {
+  const items = [];
+  if (currentTab === 'hiru') {
+    // 進捗
+    const pctBtn = document.querySelector('#pct-btns .num-btn.selected, #pct-btns .num-btn.selected-ng');
+    if (pctBtn) items.push('📊 作業進捗: ' + pctBtn.textContent);
+    // 50%以下の理由
+    const reason = document.getElementById('pct-reason-text');
+    if (reason && reason.value) items.push('⚠️ 遅れ理由: ' + reason.value);
+    // 必要人数
+    ['need-harvest','need-peel','need-box'].forEach(function(id) {
+      const btn = document.querySelector('#'+id+' .num-btn.selected');
+      const labels = {'need-harvest':'収穫','need-peel':'皮むき','need-box':'箱詰め'};
+      if (btn) items.push('👷 '+labels[id]+'必要人数: ' + btn.textContent + '人');
+    });
+    // 余剰人員
+    const surplus = document.querySelector('#surplus-people .num-btn.selected');
+    if (surplus) items.push('➕ 余剰人員: ' + surplus.textContent + '人');
+    // 病気
+    if (ynState['yn-disease']) items.push('🌿 病気: ' + (ynState['yn-disease']==='yes' ? 'あり' : 'なし'));
+    if (ynState['yn-photo']) items.push('📷 写真送信: ' + (ynState['yn-photo']==='yes' ? '送信完了' : '未送信'));
+    // シワ
+    if (ynState['yn-wrinkle']) items.push('🌱 シワ: ' + (ynState['yn-wrinkle']==='yes' ? 'あり' : 'なし'));
+    if (ynState['yn-guided']) items.push('📢 指導: ' + (ynState['yn-guided']==='yes' ? '指導済み' : 'まだ'));
+    // チェック項目
+    document.querySelectorAll('#form-hiru .check-card.checked .check-ja').forEach(function(el) {
+      items.push('✅ ' + el.textContent);
+    });
+  } else {
+    // 終業
+    document.querySelectorAll('#form-owari .check-card.checked .check-ja').forEach(function(el) {
+      items.push('✅ ' + el.textContent);
+    });
+    // 明日の人数
+    ['tmr-harvest','tmr-peel','tmr-box'].forEach(function(id) {
+      const btn = document.querySelector('#'+id+' .num-btn.selected');
+      const labels = {'tmr-harvest':'収穫','tmr-peel':'皮むき','tmr-box':'箱詰め'};
+      if (btn) items.push('📅 明日'+labels[id]+'人数: ' + btn.textContent + '人');
+    });
+    // 完了率
+    const owariPct = document.querySelector('#owari-pct-btns .num-btn.selected, #owari-pct-btns .num-btn.selected-ng');
+    if (owariPct) items.push('📊 本日完了率: ' + owariPct.textContent);
+    const owariReason = document.getElementById('owari-reason-text');
+    if (owariReason && owariReason.value) items.push('⚠️ 未完了理由: ' + owariReason.value);
+    // ケガ・トラブル
+    if (ynState['yn-incident']) items.push('🚨 ケガ・トラブル: ' + (ynState['yn-incident']==='yes' ? 'あり' : 'なし'));
+    const incidentReason = document.getElementById('incident-reason-text');
+    if (incidentReason && incidentReason.value) items.push('📝 内容: ' + incidentReason.value);
+  }
+  return items;
+}
+
 function submitReport() {
   const name = document.getElementById('sel-name').value;
   const date = document.getElementById('inp-date').value;
-  if (!name) { alert('氏名を選んでください\nPilih nama terlebih dahulu'); return; }
-  if (!date) { alert('日付を入力してください\nMasukkan tanggal'); return; }
+  if (!name) { alert('氏名を選んでください
+Pilih nama terlebih dahulu'); return; }
+  if (!date) { alert('日付を入力してください
+Masukkan tanggal'); return; }
   const label = currentTab==='hiru' ? '昼の報告 / Laporan Siang' : '終業報告 / Laporan Akhir';
   const d = new Date(date);
-  document.getElementById('done-sub').textContent = name+'　'+d.getFullYear()+'年'+(d.getMonth()+1)+'月'+d.getDate()+'日　'+label;
+  const dateStr = d.getFullYear()+'年'+(d.getMonth()+1)+'月'+d.getDate()+'日';
+  const comment = currentTab==='hiru'
+    ? document.querySelector('#form-hiru textarea:last-of-type')?.value || ''
+    : document.querySelector('#form-owari textarea:last-of-type')?.value || '';
+  const payload = {
+    tab: currentTab,
+    name: name,
+    date: dateStr,
+    groupId: GROUP_ID,
+    items: collectItems(),
+    comment: comment
+  };
+  // LINE送信
+  fetch(GAS_URL, {
+    method: 'POST',
+    body: JSON.stringify(payload)
+  }).catch(function(e) { console.log(e); });
+  document.getElementById('done-sub').textContent = name+'　'+dateStr+'　'+label;
   document.getElementById('done-card').style.display = 'block';
   document.getElementById('done-card').scrollIntoView({behavior:'smooth',block:'nearest'});
 }
